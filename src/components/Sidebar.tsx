@@ -9,7 +9,8 @@ import {
   Settings, 
   LogOut, 
   ChevronLeft,
-  Cloud
+  Cloud,
+  AppWindow
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,7 +33,7 @@ export default function Sidebar() {
   return (
     <motion.aside
       className={cn(
-        "h-screen bg-card border-r border-border transition-all duration-300 flex flex-col relative z-50",
+        "h-screen bg-card border-r border-border transition-all duration-300 hidden lg:flex flex-col relative z-50",
         collapsed ? "w-20" : "w-64"
       )}
       animate={{ width: collapsed ? 80 : 256 }}

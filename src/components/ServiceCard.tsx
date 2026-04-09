@@ -9,9 +9,10 @@ interface ServiceCardProps {
   url: string;
   icon: LucideIcon;
   status: "online" | "offline";
+  latency?: string;
 }
 
-export default function ServiceCard({ name, url, icon: Icon, status }: ServiceCardProps) {
+export default function ServiceCard({ name, url, icon: Icon, status, latency }: ServiceCardProps) {
   return (
     <motion.a
       href={url}
@@ -38,7 +39,7 @@ export default function ServiceCard({ name, url, icon: Icon, status }: ServiceCa
           status === "online" ? "bg-green-500 animate-pulse" : "bg-destructive"
         )} />
         <span className="text-[10px] uppercase tracking-wider font-bold opacity-70">
-          {status}
+          {status} {latency && status === 'online' && `• ${latency}`}
         </span>
       </div>
     </motion.a>

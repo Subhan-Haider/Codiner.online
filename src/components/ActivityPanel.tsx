@@ -11,7 +11,7 @@ const activities = [
 
 export default function ActivityPanel() {
   return (
-    <div className="glass-card p-6 rounded-2xl h-full">
+    <div className="glass-card p-6 rounded-2xl">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <Clock size={20} className="text-primary" />

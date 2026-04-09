@@ -18,41 +18,54 @@ export default function ConsoleTerminal() {
   const [logs, setLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    setLogs(mockLogs);
-    const interval = setInterval(() => {
-        setLogs(prev => [...prev.slice(-14), mockLogs[Math.floor(Math.random() * mockLogs.length)]]);
-    }, 4000);
+    const fetchLogs = async () => {
+        try {
+            const res = await fetch("/api/system");
+            const data = await res.json();
+            if (data.logs && data.logs.length > 0) {
+                setLogs(data.logs);
+            }
+        } catch {}
+    };
+
+    fetchLogs();
+    const interval = setInterval(fetchLogs, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-[400px]">
-      <div className="bg-secondary/50 px-4 py-2 flex items-center justify-between border-b border-border">
+    <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-[400px] border border-border shadow-2xl">
+      <div className="bg-secondary/80 px-4 py-3 flex items-center justify-between border-b border-border">
         <div className="flex items-center gap-2">
           <TerminalIcon size={14} className="text-primary" />
-          <span className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">Live System Logs</span>
+          <span className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-foreground">Live System Logs</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-destructive/50" />
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-amber-500" />
+          <div className="w-3 h-3 rounded-full bg-emerald-500" />
+          <div className="w-3 h-3 rounded-full bg-destructive" />
         </div>
       </div>
       
-      <div className="flex-1 p-4 font-mono text-[11px] leading-relaxed overflow-y-auto bg-black/40 scrollbar-hide">
+      <div className="flex-1 p-6 font-mono text-[11px] leading-6 overflow-y-auto bg-[#f8f8f8] dark:bg-[#0a0a0c] text-slate-600 dark:text-slate-300 scrollbar-hide border-t border-border">
         {logs.map((log, i) => (
           <div key={i} className="flex gap-4 group">
-            <span className="text-muted-foreground/30 select-none">{i + 1}</span>
+            <span className="text-slate-700 select-none w-4 text-right">{i + 1}</span>
             <span className={cn(
-                "whitespace-pre-wrap",
-                log.includes("[WARN]") ? "text-amber-400" : 
-                log.includes("[SYSTEM]") ? "text-primary" : "text-emerald-400"
+                "whitespace-pre-wrap flex-1",
+                log.includes("[WARN]") ? "text-amber-600 dark:text-amber-400 font-bold" : 
+                log.includes("[SYSTEM]") ? "text-blue-600 dark:text-blue-400" : 
+                log.includes("[AUTH]") ? "text-emerald-600 dark:text-emerald-400" : 
+                log.includes("[DOCKER]") ? "text-purple-600 dark:text-purple-400" : "text-slate-600 dark:text-slate-300"
             )}>
                 {log}
             </span>
           </div>
         ))}
-        <div className="animate-pulse inline-block w-2 h-4 bg-primary ml-1 align-middle" />
+        <div className="flex gap-4">
+            <span className="text-slate-700 select-none w-4 text-right">{logs.length + 1}</span>
+            <div className="animate-pulse inline-block w-2 h-4 bg-primary align-middle" />
+        </div>
       </div>
     </div>
   );

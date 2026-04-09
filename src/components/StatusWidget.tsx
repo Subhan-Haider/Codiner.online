@@ -12,13 +12,14 @@ interface StatusWidgetProps {
 
 export default function StatusWidget({ label, value, unit, progress, color = "bg-primary" }: StatusWidgetProps) {
   return (
-    <div className="glass-card p-5 rounded-2xl flex flex-col gap-3">
-      <div className="flex justify-between items-end">
-        <span className="text-sm font-medium text-muted-foreground uppercase tracking-widest">{label}</span>
-        <div className="flex items-baseline gap-1">
-          <span className="text-2xl font-bold">{value}</span>
-          {unit && <span className="text-xs text-muted-foreground">{unit}</span>}
-        </div>
+    <div className="glass-card p-5 rounded-2xl flex flex-col justify-center h-[110px]">
+      <div className="flex justify-between items-start mb-2">
+        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">{label}</span>
+      </div>
+      
+      <div className="flex items-baseline gap-1 mb-3">
+        <span className="text-2xl font-black">{value}</span>
+        {unit && <span className="text-[10px] font-bold text-muted-foreground uppercase">{unit}</span>}
       </div>
       
       {progress !== undefined && (

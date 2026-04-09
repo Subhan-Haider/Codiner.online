@@ -1,24 +1,34 @@
-import { Bell, Search, User, ChevronDown, Clock, CloudIcon } from "lucide-react";
+"use client";
+
+import { Bell, Search, User, ChevronDown, Clock, CloudIcon, ShieldCheck, Menu } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import MobileNav from "./MobileNav";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [adBlocked, setAdBlocked] = useState(true);
 
   useEffect(() => {
+    setMounted(true);
+    setTime(new Date());
     const timer = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-40 px-8 flex items-center justify-between">
-      <div className="flex items-center gap-8 flex-1">
-        <div className="relative w-96 flex items-center">
+    <header className="h-16 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-40 px-4 md:px-8 flex items-center justify-between">
+      <div className="flex items-center gap-4 md:gap-8 flex-1">
+        <MobileNav />
+        
+        <div className="relative w-full max-w-96 hidden sm:flex items-center">
             <Search className="absolute left-3 text-muted-foreground" size={18} />
             <input
             type="text"
-            placeholder="Search containers, logs, or services..."
+            placeholder="Search containers..."
             className="w-full bg-secondary/30 border border-border rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all font-medium"
             />
         </div>
@@ -26,7 +36,7 @@ export default function Navbar() {
         <div className="hidden xl:flex items-center gap-4 text-muted-foreground border-l border-border pl-6">
             <div className="flex items-center gap-2">
                 <Clock size={16} />
-                <span className="text-sm font-mono">{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <span className="text-sm font-mono">{mounted && time ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}</span>
             </div>
             <div className="flex items-center gap-2">
                 <CloudIcon size={16} />
@@ -36,6 +46,24 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-4">
+        {/* Ad Block Toggle */}
+        <button 
+            onClick={() => setAdBlocked(!adBlocked)}
+            className={cn(
+                "hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-bold text-xs",
+                adBlocked 
+                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.1)]" 
+                    : "bg-secondary/50 border-border text-muted-foreground hover:bg-secondary"
+            )}
+        >
+            <ShieldCheck size={16} className={adBlocked ? "animate-pulse" : ""} />
+            {adBlocked ? "Protection Active" : "Ads Allowed"}
+        </button>
+
+        <div className="h-6 w-px bg-border mx-1 hidden lg:block" />
+
+        <ThemeToggle />
+
         <div className="relative">
           <button 
             onClick={() => setShowNotifications(!showNotifications)}
@@ -81,18 +109,6 @@ export default function Navbar() {
           </AnimatePresence>
         </div>
 
-        <div className="h-8 w-px bg-border mx-2" />
-
-        <button className="flex items-center gap-3 p-1 rounded-xl hover:bg-secondary transition-all">
-          <div className="w-8 h-8 rounded-full primary-gradient flex items-center justify-center font-bold text-xs">
-            JD
-          </div>
-          <div className="hidden md:block text-left">
-            <p className="text-sm font-semibold leading-none">Admin User</p>
-            <p className="text-[10px] text-muted-foreground mt-1">Free Plan @ Codiner</p>
-          </div>
-          <ChevronDown size={14} className="text-muted-foreground" />
-        </button>
       </div>
     </header>
   );
