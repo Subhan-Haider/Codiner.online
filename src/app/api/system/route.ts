@@ -27,7 +27,7 @@ export async function GET() {
     try {
       if (os.platform() === 'win32') {
         const output = execSync('wmic logicaldisk get size,freespace,caption').toString();
-        const lines = output.split('\n').filter(line => line.includes('C:'));
+        const lines = output.split('\n').filter((line: string) => line.includes('C:'));
         if (lines.length > 0) {
           const parts = lines[0].trim().split(/\s+/);
           const free = parseInt(parts[1]);
@@ -54,7 +54,7 @@ export async function GET() {
             const fs = require('fs');
             if (fs.existsSync(sshPath)) {
                 const content = fs.readFileSync(sshPath, 'utf8');
-                sshKeys = content.split('\n').filter(l => l.trim().startsWith('ssh-')).map((l, i) => ({
+                sshKeys = content.split('\n').filter((l: string) => l.trim().startsWith('ssh-')).map((l: string, i: number) => ({
                     id: i,
                     name: l.split(' ').pop() || `Key ${i}`,
                     hash: l.substring(0, 30) + "...",
@@ -92,8 +92,8 @@ export async function GET() {
         if (os.platform() === 'win32') {
             const output = execSync('powershell "Get-EventLog -LogName System -Newest 10 | Select-Object -Property Message"').toString();
             systemLogs = output.split('\n')
-                .filter(l => l.trim().length > 10)
-                .map(l => `[SYSTEM] ${l.trim().substring(0, 80)}...`);
+                .filter((l: string) => l.trim().length > 10)
+                .map((l: string) => `[SYSTEM] ${l.trim().substring(0, 80)}...`);
         }
     } catch {
         systemLogs = ["Unable to fetch real system logs."];
@@ -115,7 +115,7 @@ export async function GET() {
                 const data = await piResponse.json();
                 piStats = {
                     blocked: data.ads_blocked_today,
-                    percent: data.ads_percentage_today?.toFixed(1) || "0.0",
+                    percent: parseFloat(data.ads_percentage_today?.toFixed(1) || "0.0"),
                     gravity: data.domains_being_blocked,
                     status: data.status,
                     isReal: true
@@ -128,7 +128,7 @@ export async function GET() {
     if (!piStats.isReal) {
         // High-quality simulation if no physical device found
         piStats.blocked = 1200 + Math.floor((Math.random() * 200));
-        piStats.percent = (15 + Math.random() * 5).toFixed(1);
+        piStats.percent = parseFloat((15 + Math.random() * 5).toFixed(1));
     }
 
     return NextResponse.json({

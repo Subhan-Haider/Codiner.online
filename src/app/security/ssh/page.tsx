@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Key, Plus, Copy, Trash2, Monitor, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const keys = [
   { id: 1, name: "Admin Macbook Pro", hash: "SHA256:7u/6+8R9...p0Q", created: "2 months ago", type: "RSA 4096" },

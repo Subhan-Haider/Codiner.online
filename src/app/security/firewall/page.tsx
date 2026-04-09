@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Lock, Plus, Trash2, Shield, ArrowRightLeft, Globe } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const rules = [
   { id: 1, name: "Web Traffic (HTTP)", port: "80", proto: "TCP", action: "Allow", source: "Any" },
